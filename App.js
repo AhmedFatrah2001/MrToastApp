@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Image, Linking, Animated, ImageBackground } from 'react-native';
-import { Button, Provider as PaperProvider } from 'react-native-paper';
-import InstagramIcon from 'react-native-vector-icons/FontAwesome';
-import SnapchatIcon from 'react-native-vector-icons/FontAwesome';
-import TikTokIcon from 'react-native-vector-icons/FontAwesome';
-import MenuIcon from 'react-native-vector-icons/FontAwesome';
-import SplashScreen from './components/SplashScreen';
+import { View, StyleSheet, Image, Linking, Animated, ImageBackground, TouchableOpacity } from 'react-native';
+import { Provider as PaperProvider } from 'react-native-paper';
+import * as SplashScreen from 'expo-splash-screen';
+import SplashScreenComponent from './components/SplashScreen';
 
 export default function App() {
   const [isSplashVisible, setIsSplashVisible] = useState(true);
-  const [fadeAnim] = useState(new Animated.Value(0)); 
+  const [fadeAnim] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    SplashScreen.preventAutoHideAsync().then(() => {
+      setTimeout(() => {
+        SplashScreen.hideAsync();
+      }, 1000);
+    });
+  }, []);
 
   useEffect(() => {
     if (!isSplashVisible) {
@@ -29,8 +34,12 @@ export default function App() {
     Linking.openURL(url).catch((err) => console.error('Failed to open URL:', err));
   };
 
+  const dialNumber = (number) => {
+    Linking.openURL(`tel:${number}`).catch((err) => console.error('Failed to dial number:', err));
+  };
+
   if (isSplashVisible) {
-    return <SplashScreen onAnimationEnd={handleSplashAnimationEnd} />;
+    return <SplashScreenComponent onAnimationEnd={handleSplashAnimationEnd} />;
   }
 
   return (
@@ -38,42 +47,21 @@ export default function App() {
       <ImageBackground source={require('./assets/back1.png')} style={styles.background}>
         <Image source={require('./assets/logoToast.png')} style={styles.logo} />
         <Animated.View style={[styles.buttonsContainer, { opacity: fadeAnim }]}>
-          <Button
-            icon={() => <MenuIcon name="bars" size={20} color="white" />}
-            mode="contained"
-            labelStyle={styles.buttonText}
-            style={styles.button}
-            onPress={() => openLink('https://www.paperturn-view.com/?pid=ODg8826897')}
-          >
-            Menu
-          </Button>
-          <Button
-            icon={() => <InstagramIcon name="instagram" size={20} color="white" />}
-            mode="contained"
-            labelStyle={styles.buttonText}
-            style={styles.button}
-            onPress={() => openLink('https://www.instagram.com/mr.toast_marrakech/')}
-          >
-            Instagram
-          </Button>
-          <Button
-            icon={() => <SnapchatIcon name="snapchat-ghost" size={20} color="white" />}
-            mode="contained"
-            labelStyle={styles.buttonText}
-            style={styles.button}
-            onPress={() => openLink('https://www.snapchat.com/add/mrtoast_kech')}
-          >
-            Snapchat
-          </Button>
-          <Button
-            icon={() => <TikTokIcon name="music" size={20} color="white" />}
-            mode="contained"
-            labelStyle={styles.buttonText}
-            style={styles.button}
-            onPress={() => openLink('https://www.tiktok.com/@user1391269107390')}
-          >
-            TikTok
-          </Button>
+          <TouchableOpacity onPress={() => openLink('https://www.paperturn-view.com/?pid=ODg8826897')}>
+            <Image source={require('./assets/button-menu.png')} style={styles.buttonImage} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => openLink('https://www.instagram.com/mr.toast_marrakech/')}>
+            <Image source={require('./assets/button-insta.png')} style={styles.buttonImage} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => openLink('https://www.snapchat.com/add/mrtoast_kech')}>
+            <Image source={require('./assets/button-snap.png')} style={styles.buttonImage} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => openLink('https://www.tiktok.com/@user1391269107390')}>
+            <Image source={require('./assets/button-tik.png')} style={styles.buttonImage} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => dialNumber('0777-549597')}>
+            <Image source={require('./assets/button-dial.png')} style={styles.buttonImage} />
+          </TouchableOpacity>
         </Animated.View>
       </ImageBackground>
     </PaperProvider>
@@ -91,17 +79,10 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
-  button: {
-    backgroundColor: '#edab6f',
-    borderColor: '#8b5717',
-    borderWidth: 2, 
-    marginBottom: 30,
-    width: 280,
-    height: 50
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
+  buttonImage: {
+    width: 240,
+    height: 90,
+    marginBottom: 14,
   },
   logo: {
     width: 200,

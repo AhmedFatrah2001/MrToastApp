@@ -4,26 +4,33 @@
     "slug": "MrToastApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logoToast.png",
     "userInterfaceStyle": "light",
     "splash": {
       "resizeMode": "contain",
       "backgroundColor": "#FFF00F"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ahmedfatrah.MrToastApp"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/logoToast.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ahmedfatrah.MrToastApp"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logoToast.png"
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "95dc1377-734b-4377-ae22-9bf853f16de8"
+      }
+    }
   }
 }
