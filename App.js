@@ -7,6 +7,7 @@ import SplashScreenComponent from './components/SplashScreen';
 export default function App() {
   const [isSplashVisible, setIsSplashVisible] = useState(true);
   const [fadeAnim] = useState(new Animated.Value(0));
+  const [areFlagsVisible, setAreFlagsVisible] = useState(false);
 
   useEffect(() => {
     SplashScreen.preventAutoHideAsync().then(() => {
@@ -31,11 +32,17 @@ export default function App() {
   };
 
   const openLink = (url) => {
-    Linking.openURL(url).catch((err) => console.error('Failed to open URL:', err));
+    Linking.openURL(url)
+      .then(() => setAreFlagsVisible(false))
+      .catch((err) => console.error('Failed to open URL:', err));
   };
 
   const dialNumber = (number) => {
     Linking.openURL(`tel:${number}`).catch((err) => console.error('Failed to dial number:', err));
+  };
+
+  const toggleFlags = () => {
+    setAreFlagsVisible(!areFlagsVisible);
   };
 
   if (isSplashVisible) {
@@ -44,10 +51,10 @@ export default function App() {
 
   return (
     <PaperProvider>
-      <ImageBackground source={require('./assets/back1.png')} style={styles.background}>
+      <ImageBackground source={require('./assets/back1.png')} style={styles.background} resizeMode="cover">
         <Image source={require('./assets/logoToast.png')} style={styles.logo} />
         <Animated.View style={[styles.buttonsContainer, { opacity: fadeAnim }]}>
-          <TouchableOpacity onPress={() => openLink('https://www.paperturn-view.com/?pid=ODg8826897')}>
+          <TouchableOpacity onPress={toggleFlags}>
             <Image source={require('./assets/button-menu.png')} style={styles.buttonImage} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => openLink('https://www.instagram.com/mr.toast_marrakech/')}>
@@ -63,6 +70,21 @@ export default function App() {
             <Image source={require('./assets/button-dial.png')} style={styles.buttonImage} />
           </TouchableOpacity>
         </Animated.View>
+
+        {/* Darkened Background */}
+        {areFlagsVisible && <View style={styles.overlay} />}
+
+        {/* Pop-up Flags */}
+        {areFlagsVisible && (
+          <View style={styles.flagsContainer}>
+            <TouchableOpacity onPress={() => openLink('https://mrtoast.kabomedias.com/mr-toast-menu-fr/')} style={styles.flagWrapper}>
+              <Image source={require('./assets/flag-fr.png')} style={styles.flagButton} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => openLink('https://mrtoast.kabomedias.com/mr-toast-menu-eng/')} style={styles.flagWrapper}>
+              <Image source={require('./assets/flag-eng.png')} style={styles.flagButton} />
+            </TouchableOpacity>
+          </View>
+        )}
       </ImageBackground>
     </PaperProvider>
   );
@@ -73,6 +95,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
   buttonsContainer: {
     marginTop: 20,
@@ -88,5 +112,31 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     marginBottom: 30,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 1,
+  },
+  flagsContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    flexDirection: 'row',
+    transform: [{ translateX: -140 }, { translateY: -50 }],
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 2, 
+  },
+  flagWrapper: {
+    marginHorizontal: 4,
+  },
+  flagButton: {
+    width: 140,
+    height: 140,
   },
 });
